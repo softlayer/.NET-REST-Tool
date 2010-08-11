@@ -1,0 +1,80 @@
+h1. SoftLayer RESTful API Services and .NET
+
+h2. Introduction
+
+SoftLayer has recently exposed their API to the public.  What's more, we have introduced a RESTful interface to that API.  RESTful services are services that expose functionality via a REST (REpresntational State Transfer) software architecture.  REST is a client/server architecture in which the requests and responses are built around representations of resources.  While not limited to HTTP, HTTP lends itself quite well to this style of interaction between entities.  The SoftLayer RESTful service is just one more way we continue to give our customers unpatrolled flexibility.
+
+So how does it work?  We thought you'd never ask!  In its simplest incarnation there is a direct correlation between the service, method name, and response.  The SLDN wiki has a complete reference that does a great job explaining both the basic and advanced topics associated with consuming the SoftLayer API as a RESTful service.
+
+"http://sldn.softlayer.com/wiki/index.php/REST":http://sldn.softlayer.com/wiki/index.php/REST
+
+h2. .NET Examples
+
+The REST examples we have compiled are very basic.  They are meant both to serve as a spring board for your own applications, as well as to serve as a sort of tool kit, while you are testing and developing.  While the example applications work reasonably well, they are lacking in polish and exception handling.  Please keep this in mind when creating your own real-world applications.  We made a decision to choose code clarity over robustness in these applications and as such they would require some honing before they could be deployed.
+
+h2. Requirements
+
+The example projects have been written using the professional edition of Microsoft Visual Studio 2010.  Both C Sharp and Visual Basic project files are provided.  The samples require the 4.0 version of the .NET framework, and have been tested on a 32-bit Windows 7 desktop.  The test platform was running at 2.13Ghz and had 4GB of RAM installed.
+
+h2. Using the Sample Code
+
+When you first execute the application, you will see a large Windows form. (Figure 1)
+
+!http://sldn.softlayer.com/wiki/images/8/81/Rest-tool-readme-figure1.png!
+Figure 1
+
+The first thing you will have to do is enter a username and an API Key.  You can retrieve both of these from the "SoftLayer Management Portal":https://manage.softlayer.com/.  The default URL for the SoftLayer RESTful service, as well as an end point to retrieve a list of recently closed tickets, has already been filled in for you.
+
+After you have entered a valid username and API key go ahead and click the "HTTP Get" button.  If you have closed any tickets on your account over the last three days, they will show up in the response window.  Otherwise, you will see an empty XML document.  (Figure 2)
+
+!http://sldn.softlayer.com/wiki/images/9/98/Rest-tool-readme-figure2.png!
+Figure 2
+
+Now go ahead and click on the radio button labeled "Servers on Account".  Did you see the end point change?  If not, click the "Recently Closed Tickets" radio button and try again.  The end point used to retrieve all the servers on the account is an example of an object mask.  When you click the "Http Get" button, the application should return a list of both hardware and virtual guests that belong to the account. (Figure 3)
+
+!http://sldn.softlayer.com/wiki/images/5/5c/Rest-tool-readme-figure3.png!
+Figure 3
+
+What if you only wanted to see the IDs for the servers?  Simply change the end point by clicking in the field and adding the qualifier ".id" to both the hardware and virtual guest keys. (Figure 4)
+
+!http://sldn.softlayer.com/wiki/images/2/25/Rest-tool-readme-figure4.png!
+Figure 4
+
+At this point, it should be obvious that you can type any end point you'd like to test into the field.  But you probably also noticed that only the "Http Get" button has been enabled.  That's because the calls we have been making don't require any POST variables.  They have been strictly object retrieval calls.  REST supports get, post, delete, and put requests.
+
+Click on the "New Ticket" radio button.  You'll see that the "Post Vars" field is populated and the "Http Post" button is enabled. (Figure 5)
+
+!http://sldn.softlayer.com/wiki/images/7/76/Rest-tool-readme-figure5.png!
+Figure 5
+
+At this point if you simply hit the "Http Post" button you will get an error. (Figure 6)
+
+!http://sldn.softlayer.com/wiki/images/b/b3/Rest-tool-readme-figure6.png!
+Figure 6
+
+Why you ask?  Because this call creates a new ticket and as such it requires a valid user ID and server ID.  If you scroll through the "Post Vars" you will see there are three tags all in caps: one that tells you to insert your user ID, one that tells you to insert your server ID, and one that says HARDWARE.  If you replace the first two parameters with valid IDs, and make sure that the last field says HARDWARE if the server ID you provided is a dedicated server, or VIRTUAL_GUEST, if the server ID you provided is a computing instance, you will find that hitting the "Http Post" button actually opens a standard support ticket on your account.
+
+You can type any XML parameters into the "Post Vars" field you like.  For optional parameters the tag <item />  equates to NULL.  Rudimentary XML parsing is done on the field when it loses focus.  So it should at least catch malformed XML.
+
+h2. The Source Code
+
+Whether using VB.NET or C#, the source code is fairly self explanatory.  The event handlers for the button clicks perform the network communications using the @HttpWebRequest@ object.  Authentication is performed by stuffing the username and api key into the header, after base64 encoding it.
+
+One bit of confusion may be the reference to the @ServicePointManager@.  This just allows us to override any certificate issues with the API server while debugging.
+
+In the case of an Http Get, the code simply loops on the input stream until it reaches the end, then the results are displayed in the response text window.  In the case of the Http Post, before reading we write the XML to the request stream.  This is in effect the body content of the HTML request.
+
+Besides the two handlers for the button clicks and the @FormatXml@/@JSON@ functions which does some very basic formatting on the results, the code is all very standard Windows UI.  Anyone reasonably familiar with .NET programming should be able to scroll through the example and quickly grasp how it all works.
+
+h2. Where to go From Here
+
+While this example was written to demonstrate SoftLayer’s RESTful services at a basic level, the freeform text boxes make it possible to create very complex request,  SoftLayer's RESTful services also support JSON input and output. SoftLayer’s REST interface supports object masks as well as pagination.  As mentioned previously the service also implements Http Put for editing existing records, and Http Delete for removing records.  If you have not yet done so, be sure to read the "SLDN REST documentation":http://sldn.softlayer.com/wiki/index.php/REST in its entirety.  Other resources include the "SoftLayer forums":http://forums.softlayer.com/ and our "GitHub repository":http://github.com/softlayer/.  You can also always "e-mail us":mailto:sldn@softlayer.com.
+
+h2. Author
+
+This software is written by the SoftLayer Development Team <"sldn@softlayer.com":mailto:sldn@softlayer.com>.
+
+h2. Copyright
+
+This software is Copyright (c) 2010 "SoftLayer Technologies, Inc":http://www.softlayer.com/. See the bundled LICENSE.textile file for more information.
+
