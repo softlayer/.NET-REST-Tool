@@ -2,7 +2,7 @@ h1. SoftLayer RESTful API Services and .NET
 
 h2. Introduction
 
-SoftLayer has recently exposed their API to the public.  What's more, we have introduced a RESTful interface to that API.  RESTful services are services that expose functionality via a REST (REpresntational State Transfer) software architecture.  REST is a client/server architecture in which the requests and responses are built around representations of resources.  While not limited to HTTP, HTTP lends itself quite well to this style of interaction between entities.  The SoftLayer RESTful service is just one more way we continue to give our customers unpatrolled flexibility.
+SoftLayer has recently exposed their API to the public.  What's more, we have introduced a RESTful interface to that API.  RESTful services are services that expose functionality via a REST (REpresntational State Transfer) software architecture.  REST is a client/server architecture in which the requests and responses are built around representations of resources.  While not limited to HTTP, HTTP lends itself quite well to this style of interaction between entities.  The SoftLayer RESTful service is just one more way we continue to give our customers unparalleled flexibility.
 
 So how does it work?  We thought you'd never ask!  In its simplest incarnation there is a direct correlation between the service, method name, and response.  The SLDN wiki has a complete reference that does a great job explaining both the basic and advanced topics associated with consuming the SoftLayer API as a RESTful service.
 
