@@ -1,4 +1,4 @@
-﻿' Copyright (c) 2010, SoftLayer Technologies, Inc. All rights reserved.
+﻿' Copyright (c) 2011, SoftLayer Technologies, Inc. All rights reserved.
 '
 ' Redistribution and use in source and binary forms, with or without 
 ' modification, are permitted provided that the following conditions are met:
@@ -37,7 +37,8 @@
 '|	Dev Summary->																    |
 '|   Revision:	Who:	When:   	What:										    |
 '|   =========== ======= ===========	=========================================	|
-'|   01.00.00	WJF		07/20/10	Original Creation (see restrictions)		    |
+'|   01.00.00	WJF		07/20/10	    Original Creation (see restrictions)	    |
+'|   01.00.01   WJF     05/27/11        Better error handling.                      |
 '+----------------------------------------------------------------------------------+
 
 Imports System.Collections.Generic
@@ -473,10 +474,27 @@ Public Class frmMain
             Else
                 txtResponse.Text = FormatJSON(result)
             End If
-        Catch [error] As Exception
-            System.Windows.Forms.MessageBox.Show([error].Message.ToString())
+        Catch [error] As WebException
+
+            Dim extMsg As String = ""
+
+            If [error].Response IsNot Nothing Then
+
+                If [error].Response.ContentLength <> 0 Then
+                    Using stream = [error].Response.GetResponseStream()
+                        Using reader = New StreamReader(stream)
+                            extMsg = reader.ReadToEnd()
+                        End Using
+                    End Using
+                End If
+
+            End If
+            System.Windows.Forms.MessageBox.Show([error].Message.ToString() + vbCrLf + extMsg)
         End Try
     End Sub
 
+    Private Sub frmMain_Load(ByVal sender As System.Object, ByVal e As System.EventArgs) Handles MyBase.Load
+
+    End Sub
 End Class
 

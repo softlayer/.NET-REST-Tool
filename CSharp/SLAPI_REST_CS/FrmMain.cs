@@ -1,4 +1,4 @@
-﻿// Copyright (c) 2010, SoftLayer Technologies, Inc. All rights reserved.
+﻿// Copyright (c) 2011, SoftLayer Technologies, Inc. All rights reserved.
 //
 // Redistribution and use in source and binary forms, with or without 
 // modification, are permitted provided that the following conditions are met:
@@ -39,6 +39,7 @@
 	|   Revision:	Who:	When:   	What:										|
     |   =========== ======= ===========	=========================================	|
     |   01.00.00	WJF		07/20/10	Original Creation (see restrictions)		|
+    |   01.01.00    WJF     05/27/11    Enhanced exception handler.                 |
 	+-------------------------------------------------------------------------------+
          
 */
@@ -595,9 +596,23 @@ namespace SLAPI_REST_CS
                     txtResponse.Text = FormatJSON(result);
                 }
             }
-            catch (Exception error)
+            catch (WebException ex)
             {
-                System.Windows.Forms.MessageBox.Show(error.Message.ToString());
+                String extendedErrMsg = "";
+                if (ex.Response != null)
+                {
+                    if (ex.Response.ContentLength != 0)
+                    {
+                        using (var stream = ex.Response.GetResponseStream())
+                        {
+                            using (var reader = new StreamReader(stream))
+                            {
+                                extendedErrMsg = reader.ReadToEnd();
+                            }
+                        }
+                    }
+                }
+                System.Windows.Forms.MessageBox.Show(ex.Message.ToString() + "/n" + extendedErrMsg);
             }
         }
 
